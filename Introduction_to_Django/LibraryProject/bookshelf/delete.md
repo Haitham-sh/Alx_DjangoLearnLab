@@ -1,6 +1,6 @@
 ## input:
 ```
-book01.delete()
+book.delete()
 ```
 
 ## output:
