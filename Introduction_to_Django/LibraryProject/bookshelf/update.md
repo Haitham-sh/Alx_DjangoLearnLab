@@ -1,8 +1,8 @@
 ## input:
 ```
-book01 = Book.objects.get(id=1)
-book01.title = "Nineteen Eighty-Four"
-book01.save()
+book = Book.objects.get(id=1)
+book.title = "Nineteen Eighty-Four"
+book.save()
 print(book_data)
 ```
 
