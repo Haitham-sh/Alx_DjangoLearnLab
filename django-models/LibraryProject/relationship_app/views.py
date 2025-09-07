@@ -13,5 +13,5 @@ def book_list(request):
 class Library_detail(ListView):
     model = Library
     queryset = Library.objects.get(name = "lib1")
-    template_name = 'relationship_app/library.html'
+    template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
