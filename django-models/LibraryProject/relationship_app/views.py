@@ -8,7 +8,7 @@ def book_list(request):
       books = Book.objects.all()
       print(books)
       context = {'books': books}
-      return render(request, 'list_books.html', context)
+      return render(request, 'relationship_app/list_books.html', context)
 
 class Library_detail(ListView):
     model = Library
