@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile
 
 def is_librarian(user):
-    user.UserProfile.role == 'Librarian'
+    return hasattr(user, 'UserProfile') and user.UserProfile.role == 'Librarian'
 
 @user_passes_test(is_librarian)
 def librarian_view(request):
