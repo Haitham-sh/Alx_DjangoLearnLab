@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Book
 from .models import Library
 from django.views.generic import ListView
-from django.views.generic import DeleteView
+from django.views.generic.detail import DetailView
 
 # Create your views here.
 
