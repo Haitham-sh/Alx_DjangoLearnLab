@@ -17,9 +17,7 @@ class Book(models.Model):
         return f"{self.title} by {self.author} ({self.publication_year})"
 
 class CustomUserManager(BaseUserManager):
-    """
-    Custom manager for CustomUser model.
-    """
+
     def create_user(self, username, email, password=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be set")
@@ -30,9 +28,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, password=None, **extra_fields):
-        """
-        Create and return a superuser with admin privileges.
-        """
+        
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -45,9 +41,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
-    """
-    Custom user model extending AbstractUser.
-    """
+
     email = models.EmailField(unique=True)  # Make email a required unique field
     date_of_birth = models.DateField(null=True, blank=True)
     profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
