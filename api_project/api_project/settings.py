@@ -130,4 +130,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.IsAuthenticated',
         'rest_framework.authentication.IsAdminUser',
     ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
