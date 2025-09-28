@@ -2,8 +2,8 @@ from django.shortcuts import render
 from .models import Book, Author
 from .serializers import BookSerializer
 from rest_framework import generics, viewsets
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import  IsAuthenticatedOrReadOnly,IsAuthenticated
+from rest_framework.permissions import IsAuthenticatedOrReadOnly,IsAuthenticated
+
 
 # Create your views here.
 class BookViewSet(viewsets.ModelViewSet):
