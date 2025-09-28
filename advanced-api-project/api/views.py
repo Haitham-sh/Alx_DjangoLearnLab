@@ -3,8 +3,8 @@ from .models import Book, Author
 from .serializers import BookSerializer
 from rest_framework import generics, viewsets
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
+from django_filters import rest_framework
 from rest_framework.filters import SearchFilter, OrderingFilter
-import django_filters.rest_framework
 
 
 # Create your views here.
@@ -15,7 +15,7 @@ class BookViewSet(viewsets.ModelViewSet):
 
 class AuthorBooks(generics.ListAPIView):
     serializer_class = BookSerializer
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend, SearchFilter, OrderingFilter]
+    filter_backends = [rest_framework.DjangoFilterBackend, SearchFilter, OrderingFilter]
     filterset_fields = ['title', 'author','publication_year']
     search_fields = ['title', 'author']
     ordering_fields = ['title', 'publication_year']
