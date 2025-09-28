@@ -11,7 +11,7 @@ class BookAPITestCase(APITestCase):
         Set up the test environment.
         Create test user, authenticate, and create sample book data.
         """
-        self.user = User.objects.create_user(username='testuser', password='password')
+        self.user = User.objects.create_user(username='mytestuser', password='testpassword')
         self.book_data = {
             'title': 'Test b1',
             'author': 'Test Auth1',
@@ -20,7 +20,7 @@ class BookAPITestCase(APITestCase):
         self.book = Book.objects.create(**self.book_data)
         self.url_list = '/api/books/'
         self.url_detail = f'/api/books/{self.book.id}/'
-        self.client.login(username='haitham', password='haitham81')
+        self.client.login(username='mytestuser', password='testpassword')
 
     def test_create_book(self):
         """Test the creation of a book."""
@@ -87,7 +87,7 @@ class BookAPITestCase(APITestCase):
 
     def test_filter_books(self):
         """Test filtering books by title, author, and publication year."""
-        response = self.client.get(self.url_list, {'title': 'Test Book'}, format='json')
+        response = self.client.get(self.url_list, {'title': 'Test b1'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
 
@@ -95,4 +95,5 @@ class BookAPITestCase(APITestCase):
         """Test ordering books by title or publication year."""
         response = self.client.get(self.url_list, {'ordering': 'title'}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(response.data[0]['title'] <= response.data[-1]['title'])
+        titles = [book['title'] for book in response.data]
+        self.assertEqual(titles, sorted(titles))
