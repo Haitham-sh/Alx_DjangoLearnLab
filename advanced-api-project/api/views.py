@@ -3,7 +3,7 @@ from .models import Book, Author
 from .serializers import BookSerializer
 from rest_framework import generics, viewsets
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import  IsAuthenticatedOrReadOnly,IsAuthenticated
 
 # Create your views here.
 class BookViewSet(viewsets.ModelViewSet):
