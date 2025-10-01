@@ -1,0 +1,31 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block title %}profile{% endblock %}
+
+{% block content %}
+<h1>Profile {{ user }}</h1>
+    {% if profile.profile_picture %}
+        <p>
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" style="max-width:200px; max-height:200px;"/>
+        </p>
+    {% else %}
+        <p>No profile picture</p>
+    {% endif %}
+    <p>name: {{ user.first_name }} {{ user.last_name }}</p>
+    <p>Email: {{ user.email }}</p>
+    {% if profile.bio %}
+        <p>Bio: {{ profile.bio }}</p>
+    {% else %}
+        {{ profile }}
+    {% endif %}
+    <br>
+    <button>
+        <a href="{% url 'edit_profile' %}">Edit Profile</a>
+    </button>
+    <br>
+    <button> 
+        <a href="{% url 'logout' %}">logout</a>
+    </button>
+
+{% endblock %}
