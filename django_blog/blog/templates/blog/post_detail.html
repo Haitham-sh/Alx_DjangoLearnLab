@@ -19,7 +19,7 @@
 <p style="color: red;">Hi "{{user.username}}" you can only edit or delete posts you create</p>
 {% else %}
 <p style="color: red;">
-    To edit or delete your posts you must be <button><a href="{% url 'login' %}">Login</a></button>
+    To edit or delete your posts you must <button><a href="{% url 'login' %}">Login</a></button>
 </p>
 
 {% endif %}

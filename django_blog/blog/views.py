@@ -9,6 +9,7 @@ from .models import Profile, Post
 from .forms import UserEditForm, ProfileEditForm
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
 
 # Create your views here.
 def home(request):
@@ -54,7 +55,9 @@ def edit_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            # redirect or show success message
+            # redirect and show success message
+            messages.success(request, 'Profile updated successfully')
+            return redirect('profile')
     return render(request, 'blog/edit_profile.html', {
         'user_form': user_form,
         'profile_form': profile_form,
