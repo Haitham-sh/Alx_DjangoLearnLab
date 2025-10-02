@@ -5,6 +5,25 @@
 
 <h1>Welcome to the Django Blog Home Page</h1>
 
-<p>This is the home page of the Django Blog application.</p>
+<p>
+    You can view all blog posts, create new posts, and manage your existing posts.
+</p>
+{% if user.is_authenticated %}
+<p>
+    Hello, {{ user.username }} ❤️ you can 
+<button>
+    <a href="{% url 'profile' %}">go to your profile</a>
+</button>
+or 
+<button>
+    <a href="{% url 'logout' %}">logout</a>
+</button>
+</p>
+
+{% else %}
+please ❤️
+<button>
+    <a href="{% url 'login' %}">login</a>
+{% endif %}
 
 {% endblock %}

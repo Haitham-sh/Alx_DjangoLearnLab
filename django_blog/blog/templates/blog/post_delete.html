@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+{% block title %}Home - Django Blog{% endblock %}
+
+{% block content %}
+<h2>are you sure want delete the post</h2>
+<h3>{{ post.title }}</h3>
+<p>{{ post.content }}</p>
+<p><em>By {{ post.author.username }} on {{ post.created_at }}</em></p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm Delete</button>
+
+{% endblock %}

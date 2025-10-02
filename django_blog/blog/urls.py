@@ -9,9 +9,19 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('', views.home, name='home'),
     path("register/", SignUpView.as_view(), name="register"),
-    path('profile/',views.profile_view,name='profile'),
-    path('posts/',TemplateView.as_view(template_name='blog/posts.html'),name='posts'),
     path('login/',auth_views.LoginView.as_view(template_name='blog/login.html'),name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('profile/',views.profile_view,name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    path('posts/', views.PostsListView.as_view(), name='posts_list'),
+    path('posts/new/', views.PostCreateView.as_view(), name='post_create'),
+    path('posts/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
+    path('posts/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post_edit'),
+    path('posts/<int:pk>/delete/', views.PostDeleteView.as_view(), name='post_delete'),
+] 
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

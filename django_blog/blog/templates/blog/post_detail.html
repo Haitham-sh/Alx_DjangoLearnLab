@@ -1,0 +1,27 @@
+{% extends 'blog/base.html' %}
+{% block title %}Home - Django Blog{% endblock %}
+{% load static %}
+
+{% block content %}
+<div>
+    <h3 class="h3">{{ post.title }}</h3>
+    <p class="p">{{ post.content }}</p>
+    <p class="p"><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>
+</div>
+{% if user.is_authenticated and user == post.author %}
+<button>
+    <a href="{% url 'post_delete' post.id%}">Delete the post</a>
+</button>
+<button>
+    <a href="{% url 'post_edit' post.id%}">Edit the post</a>
+</button>
+{% elif user.is_authenticated and user != post.author %}
+<p style="color: red;">Hi "{{user.username}}" you can only edit or delete posts you create</p>
+{% else %}
+<p style="color: red;">
+    To edit or delete your posts you must be <button><a href="{% url 'login' %}">Login</a></button>
+</p>
+
+{% endif %}
+
+{% endblock %}
