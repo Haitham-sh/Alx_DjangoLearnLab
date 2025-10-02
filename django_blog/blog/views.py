@@ -9,7 +9,6 @@ from .models import Profile, Post
 from .forms import UserEditForm, ProfileEditForm
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib import messages
 
 # Create your views here.
 def home(request):
