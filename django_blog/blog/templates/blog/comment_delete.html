@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %} {% block title %}delete comment{% endblock %} {%
+{% block content %}
+<h2>are you sure want delete the comment</h2>
+<p>
+  By <strong>{{ comment.author }}</strong> on {{ comment.created_at|date:"F d,Y, H:i" }}
+</p>
+{% if comment.updated_at != comment.created_at %}
+<p>Last update {{ comment.updated_at|date:"F d, Y, H:i" }}</p>
+{% endif %}
+<p>
+  <strong> {{ comment.content }} </strong>
+  </p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Confirm Delete</button>
+</form>
+{% endblock %}

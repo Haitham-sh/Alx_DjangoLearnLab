@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from .models import Profile, Post
-from .forms import UserEditForm, ProfileEditForm
+from .models import Profile, Post, Comment
+from .forms import UserEditForm, ProfileEditForm, CommentForm
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 
@@ -60,7 +60,7 @@ def edit_profile(request):
         'profile_form': profile_form,
     })
 
-
+#posts views #
 class PostsListView (ListView):
     model = Post
     template_name = 'blog/posts.html'
@@ -71,6 +71,12 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comments'] = self.object.comments.all().order_by('-created_at')
+        context['comment_form'] = CommentForm()
+        return context
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -89,7 +95,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'blog/post_edit.html'
     fields = ['title', 'content']
     login_url = 'login'
-    
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.object.pk})
     
@@ -97,7 +102,6 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         if self.request.user == self.get_object().author:
             post = self.get_object()
             return self.request.user == post.author
-            return 
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
@@ -110,3 +114,74 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == self.get_object().author:
             post = self.get_object()
             return self.request.user == post.author
+        
+# comments views #
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    login_url = 'login'
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = Post.objects.get(pk=self.kwargs['pk'])
+        response = super().form_valid(form)
+        return redirect('post_detail', pk=self.kwargs['pk'])
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.kwargs['pk']})
+        
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    template_name = 'blog/comment_edit.html'
+    fields = ['content']
+    login_url = 'login'
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+    
+    def test_func(self):
+        if self.request.user == self.get_object().author:
+            comment = self.get_object()
+            return self.request.user == comment.author
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    template_name = 'blog/comment_delete.html'
+    login_url = 'login'
+
+    def get_success_url(self):
+        return reverse('post_detail', kwargs={'pk': self.object.post.pk})
+
+    def test_func(self):
+        if self.request.user == self.get_object().author:
+            comment = self.get_object()
+            return self.request.user == comment.author
+        
+class CommentListView(ListView, LoginRequiredMixin):
+    model = Comment
+    template_name = 'blog/comment_list.html'
+    context_object_name = 'comments'
+    login_url = 'login'
+
+    def get_queryset(self):
+        return Comment.objects.filter(post_id=self.kwargs['pk'])
+    
+@login_required
+def add_comment_to_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    return redirect('post_detail', pk=post.pk)
+
+
+
+
+
+
+
+

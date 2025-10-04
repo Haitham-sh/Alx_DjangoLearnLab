@@ -3,25 +3,85 @@
 {% load static %}
 
 {% block content %}
-<div>
-    <h3 class="h3">{{ post.title }}</h3>
-    <p class="p">{{ post.content }}</p>
-    <p class="p"><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>
-</div>
-{% if user.is_authenticated and user == post.author %}
-<button>
-    <a href="{% url 'post_delete' post.id%}">Delete the post</a>
-</button>
-<button>
-    <a href="{% url 'post_edit' post.id%}">Edit the post</a>
-</button>
-{% elif user.is_authenticated and user != post.author %}
-<p style="color: red;">Hi "{{user.username}}" you can only edit or delete posts you create</p>
-{% else %}
-<p style="color: red;">
-    To edit or delete your posts you must <button><a href="{% url 'login' %}">Login</a></button>
-</p>
+<article>
+    <div>
+        <h3 class="h3">{{ post.title }}</h3>
+        <p class="p">{{ post.content }}</p>
+        <p class="p"><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>
+    </div>
+    
+    {% if user.is_authenticated and user == post.author %}
+    <button>
+        <a href="{% url 'post_delete' post.id %}">Delete the post</a>
+    </button>
+    <button>
+        <a href="{% url 'post_edit' post.id %}">Edit the post</a>
+    </button>
+    {% elif user.is_authenticated and user != post.author %}
+    <p style="color: red;">Hi "{{ user.username }}" you can only edit or delete posts you create</p>
+    {% else %}
+    <p style="color: red;">
+        To edit or delete your posts you must 
+        <a href="{% url 'login' %}" class="button">Login</a>
+    </p>
+    {% endif %}
+</article>
+<br>
+<hr>
 
-{% endif %}
+<section class="comments-section">
+    <h2>Comments</h2>
+    {% if user.is_authenticated %}
+        <div>
+            <form method="post" action="{% url 'comment_create' post.pk %}">
+                {% csrf_token %}
+                <h3>Leave a Comment</h3>
+                <div>
+                    {{ comment_form.content }}
+                </div>
+                <button type="submit" class="btn btn-primary">submit your comment</button>
+            </form>
+        </div>
+        {% else %}
+        <p><a href="{% url 'login' %}"> login</a> To add a comment </p>
+        {% endif %}
 
+    <div class="existing-comments">
+        {% if comments %}
+            <ul>
+                {% for comment in comments %}
+                    {% if comment.post.id == post.id %}
+                        <li>
+                            <small>
+                                By <strong>{{ comment.author }}</strong> on {{ comment.created_at|date:"F d, Y, H:i" }} 
+                            </small>
+                            {% if comment.updated_at|date:"U" != comment.created_at|date:"U" %}
+                                <small>
+                                    Last update {{ comment.updated_at|date:"F d, Y, H:i" }}
+                                </small>
+                            {% endif %}
+                            <p>
+                                <strong>{{ comment.content }}</strong>
+                            </p>
+                            {% if user == comment.author %}
+                                <div>
+                                    <button>
+                                        <a href="{% url 'comment_edit' comment.id %}">Edit</a>
+                                    </button>
+                                    <button>
+                                        <a href="{% url 'comment_delete' comment.id %}">Delete</a>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% else %}
+                        <p>No comments yet. Be the first to comment!</p>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

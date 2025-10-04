@@ -1,0 +1,18 @@
+{% extends 'blog/base.html' %}
+{% block title %} posts {% endblock %}
+
+{% block content %}
+<h2>comments</h2>
+{% for comment in comments %}
+    <ul>
+        <li>
+            <h3>{{ comment.content }}</h3>
+            <p>By {{ comment.author.username }} on {{ comment.published_date }}</p>
+            <a href="{% url 'comment_delete' comment.id %}">Delete</a>
+            <a href="{% url 'comment_edit' comment.id %}">Update</a>
+        </li>
+    </ul>
+    {% empty %}
+    <li>No posts available.</li>
+{% endfor %}
+{% endblock %}
