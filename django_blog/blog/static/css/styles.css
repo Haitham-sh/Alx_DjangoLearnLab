@@ -17,7 +17,8 @@ header {
     text-align: center;
 }
 
-header nav ul {
+header nav ul,
+.comments {
     list-style-type: none;
 }
 
@@ -48,6 +49,12 @@ button a {
     text-decoration: none;
     color: black;
     padding: 5px;
+}
+
+.comment {
+    margin: 1vw;
+    border: solid 1px black;
+    padding: 0.5vw;
 }
 
 footer {
