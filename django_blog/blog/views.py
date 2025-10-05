@@ -179,7 +179,7 @@ def add_comment_to_post(request, pk):
             return redirect('post_detail', pk=post.pk)
     return redirect('post_detail', pk=post.pk)
 
-class PostByTagView(ListView):
+class PostByTagListView(ListView):
     model = Post
     template_name = 'blog/posts.html'
     context_object_name = 'posts'
