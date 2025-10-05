@@ -179,6 +179,15 @@ def add_comment_to_post(request, pk):
             return redirect('post_detail', pk=post.pk)
     return redirect('post_detail', pk=post.pk)
 
+class PostByTagView(ListView):
+    model = Post
+    template_name = 'blog/posts.html'
+    context_object_name = 'posts'
+    
+    def get_queryset(self):
+        tag = self.kwargs['tag']
+        return Post.objects.filter(tag__name=tag)
+
 
 def search_posts(query):
         results = Post.objects.filter(
@@ -186,6 +195,4 @@ def search_posts(query):
         )
         return results
 
-def filter_posts_by_tag(tag_name):
-        results = Post.objects.filter(tags__name__icontains=tag_name)
-        return results
+
