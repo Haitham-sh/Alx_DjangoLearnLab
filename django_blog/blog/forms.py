@@ -22,3 +22,19 @@ class CommentForm(forms.ModelForm):
                 'rows': 3,
             })
         }
+
+class PostForm(forms.ModelForm):
+    tags = forms.CharField(
+        widgets = TagWidget(),
+        required=False
+    )
+
+    class Meta:
+        model = Post
+        fields = ['title', 'content', 'tags']
+
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
