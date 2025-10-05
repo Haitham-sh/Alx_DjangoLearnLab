@@ -183,10 +183,10 @@ class PostByTagView(ListView):
     model = Post
     template_name = 'blog/posts.html'
     context_object_name = 'posts'
-    
+
     def get_queryset(self):
         tag = self.kwargs['tag']
-        return Post.objects.filter(tag__name=tag)
+        return Post.objects.filter(tags__name__icontains=tag)
 
 
 def search_posts(query):
