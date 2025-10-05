@@ -1,0 +1,22 @@
+{% extends 'blog/base.html' %}
+{% block title %}posts by tag{% endblock %}
+
+{% block content %}
+{% if tag %}
+        <h2>Articles tagged with "{{ tag.name }}"</h2>
+{% endif %}
+
+<p>
+    Tags: 
+    {% for result in results %}
+        <h3>{{ post.title }}</h3>
+        {% if post.tag.all %}
+            <p>Tags: {{ post.tag.all|join:", " }}</p>
+        {% endif %}
+        <p>{{ post.content|truncatewords:30 }}</p>
+        <p><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>
+        <a href="{% url 'post_detail' post.id %}">Read more</a>
+    {% endfor %}
+</p>
+
+{% endblock %}

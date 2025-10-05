@@ -1,7 +1,6 @@
 from django.urls import path, include
 from . import views
 from .views import SignUpView
-from django.views.generic import TemplateView
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
@@ -24,6 +23,9 @@ urlpatterns = [
     path('post/<int:pk>/comments/new/', views.CommentCreateView.as_view(), name='comment_create'),
     path('post/comment/<int:pk>/update/', views.CommentUpdateView.as_view(), name='comment_edit'),
     path('post/comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment_delete'),
+
+    path('tags/<tag_name>/', views.filter_posts_by_tag, name='filter_posts_by_tag'),
+    path('search/', views.filter_posts_by_tag, name='search_posts'),
 ] 
 
 if settings.DEBUG:

@@ -1,8 +1,12 @@
 {% extends 'blog/base.html' %} {% block title %}Home - Django Blog{% endblock %}
-{% load static %} {% block content %}
+{% load static %} 
+{% block content %}
 <article>
   <div>
     <h2>{{ post.title }}</h2>
+    {% if post.tag.all %}
+        <p>Tags: {{ post.tag.all|join:", " }}</p>
+    {% endif %}
     <p>{{ post.content }}</p>
     <p><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>
   </div>
@@ -50,8 +54,7 @@
       {% for comment in comments %} {% if comment.post.id == post.id %}
       <li class="comment">
         <small>
-          By <strong>{{ comment.author }}</strong> on {{
-          comment.created_at|date:"F d, Y, H:i" }}
+          By <strong>{{ comment.author }}</strong> on {{ comment.created_at|date:"F d, Y, H:i" }}
         </small>
         {% if comment.updated_at|date:"U" != comment.created_at|date:"U" %}
         <small> Last update {{ comment.updated_at|date:"F d, Y, H:i" }} </small>

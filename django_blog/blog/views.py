@@ -9,6 +9,7 @@ from .models import Profile, Post, Comment
 from .forms import UserEditForm, ProfileEditForm, CommentForm
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.db.models import Q
 
 # Create your views here.
 def home(request):
@@ -93,7 +94,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     template_name = 'blog/post_edit.html'
-    fields = ['title', 'content']
+    fields = ['title', 'content', 'tag']
     login_url = 'login'
     def get_success_url(self):
         return reverse('post_detail', kwargs={'pk': self.object.pk})
@@ -179,9 +180,12 @@ def add_comment_to_post(request, pk):
     return redirect('post_detail', pk=post.pk)
 
 
+def search_posts(query):
+        results = Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
+        return results
 
-
-
-
-
-
+def filter_posts_by_tag(tag_name):
+        results = Post.objects.filter(tags__name__icontains=tag_name)
+        return results

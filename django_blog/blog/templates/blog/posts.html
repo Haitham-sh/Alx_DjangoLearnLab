@@ -1,8 +1,15 @@
 {% extends 'blog/base.html' %}
 {% block title %} posts {% endblock %}
+{% load static %} 
 
 {% block content %}
 <h2>Blog Posts</h2>
+<div>
+    <form  action="{% url 'filter_posts_by_tag' %}">
+        <input type="search" name="tag_name" placeholder="Search by tag">
+        <button type="submit">Search</button>
+    </form>
+</div>
 <button> 
     <a href="{% url 'post_create' %}">Create a new post</a>
 </button>
@@ -11,6 +18,9 @@
     {% for post in posts %}
     <li class="comment">
         <h3>{{ post.title }}</h3>
+        {% if post.tag.all %}
+        <p>Tags: {{ post.tag.all|join:", " }}</p>
+        {% endif %}
         <p>{{ post.content|truncatewords:30 }}</p>
         <p><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>
         <a href="{% url 'post_detail' post.id %}">Read more</a>
