@@ -5,8 +5,8 @@
 {% block content %}
 <h2>Blog Posts</h2>
 <div>
-    <form  action="{% url 'filter_posts_by_tag' %}">
-        <input type="search" name="tag_name" placeholder="Search by tag">
+    <form action="{% url 'search_posts' %}">
+        <input type="search"name="search" placeholder="Search by title or content">
         <button type="submit">Search</button>
     </form>
 </div>
@@ -19,7 +19,13 @@
     <li class="comment">
         <h3>{{ post.title }}</h3>
         {% if post.tag.all %}
-        <p>Tags: {{ post.tag.all|join:", " }}</p>
+        <p>
+            Tags: 
+            {% for tag in post.tag.all %}
+            <a href="{% url 'filter_posts_by_tag' tag.slug %}">{{ tag.name }}</a>
+            {% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
         {% endif %}
         <p>{{ post.content|truncatewords:30 }}</p>
         <p><em>By {{ post.author.username }} on {{ post.published_date }}</em></p>

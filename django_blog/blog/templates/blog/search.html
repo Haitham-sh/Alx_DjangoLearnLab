@@ -1,11 +1,11 @@
 {% extends 'blog/base.html' %}
-{% block title %}posts by tag{% endblock %}
+{% block title %}search{% endblock %}
 
 {% block content %}
 {% if tag %}
-        <h2>Posts tagged with "{{ tag.name }}"</h2>
+        <h2>Posts contain "{{ search }}"</h2>
 {% endif %}
-
+{% if posts %}
 <p>
     {% for post in posts %}
         <h3>{{ post.title }}</h3>
@@ -17,5 +17,8 @@
         <a href="{% url 'post_detail' post.id %}">Read more</a>
     {% endfor %}
 </p>
+{% else %}
+    <p>No posts found</p>
+{% endif %}
 
 {% endblock %}

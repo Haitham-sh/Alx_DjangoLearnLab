@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Profile, Comment
-
+from .models import Profile, Comment, Post
 
 class UserEditForm(forms.ModelForm):
     class Meta:
@@ -25,17 +24,14 @@ class CommentForm(forms.ModelForm):
         }
 
 class PostForm(forms.ModelForm):
-    tags = forms.CharField(
-        widgets = TagWidget(),
-        required=False
-    )
-
+    
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tags']
-
-    tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.all(),
-        required=False,
-        widget=forms.CheckboxSelectMultiple
-    )
+        fields = ['tag']
+        widgets = {
+            'tag': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter a tag',
+                'rows': 3,
+            })
+        }

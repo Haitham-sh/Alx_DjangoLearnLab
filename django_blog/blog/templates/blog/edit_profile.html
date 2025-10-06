@@ -8,7 +8,6 @@
         {% csrf_token %}
         <h2>Edit User Information</h2>
         {{ user_form.as_p }}
-        <h2>Edit Profile Information</h2>
         {{ profile_form.as_p }}
         <button type="submit">Save Changes</button>
     </form>

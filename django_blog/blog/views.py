@@ -10,6 +10,7 @@ from .forms import UserEditForm, ProfileEditForm, CommentForm
 from django.urls import reverse
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
+from taggit.models import Tag
 
 # Create your views here.
 def home(request):
@@ -179,20 +180,22 @@ def add_comment_to_post(request, pk):
             return redirect('post_detail', pk=post.pk)
     return redirect('post_detail', pk=post.pk)
 
-class PostByTagListView(ListView):
-    model = Post
-    template_name = 'blog/posts.html'
-    context_object_name = 'posts'
+def PostByTagListView(request, tag_slug = None):
+    tag = None
 
-    def get_queryset(self):
-        tag = self.kwargs['tag']
-        return Post.objects.filter(tags__name__icontains=tag)
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        posts = Post.objects.filter(tag=tag)
+    return render(request, 'blog/posts_tag.html', {'tag': tag, 'posts': posts})
 
-
-def search_posts(query):
-        results = Post.objects.filter(
-            Q(title__icontains=query) | Q(content__icontains=query)
+def search_posts(request):
+    search = request.GET.get('search', '')
+    if search:
+        posts = Post.objects.filter(
+            Q(title__icontains=search) | Q(content__icontains=search)
         )
-        return results
+    else:
+        posts = Post.objects.none()
+    return render(request, 'blog/search.html', {'posts': posts, 'search_term': search})
 
 
