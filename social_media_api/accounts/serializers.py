@@ -6,8 +6,8 @@ from django.contrib.auth import get_user_model
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField()
-    password2 = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    password2 = serializers.CharField(write_only=True)
     
     class Meta:
         model = User
@@ -16,10 +16,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Passwords must match."})
+        attrs.pop('password2')
         return attrs
     
     def create(self, validated_data):
-        validated_data.pop('password2')
         user = get_user_model().objects.create_user(**validated_data)
         Token.objects.create(user=user)
         return user
