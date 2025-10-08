@@ -46,3 +46,12 @@ def search_posts(request):
     else:
         posts = Post.objects.none()
     return render(request, 'blog/search.html', {'posts': posts, 'search_term': search})
+
+class FeedViewSet(viewsets.ModelViewSet):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+    permission_classes= [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Post.objects.filter(Q(author__in=user.following.all()) | Q(author=user)).order_by('-created_at')

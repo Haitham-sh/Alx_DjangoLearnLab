@@ -10,6 +10,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 class RegistrationView(generics.CreateAPIView):
@@ -50,6 +51,23 @@ class ProfileView(APIView):
         user = request.user
         serializer = ProfileSerializer(user)
         return Response(serializer.data)
-    
 
+
+class FollowView(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def follow_user(request, user_id):
+        user_to_follow = User.objects.get(id=user_id)
+        request.user.following.add(user_to_follow)
+        return Response(status=status.HTTP_200_OK)
+
+class UnfollowView(APIView):
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def unfollow_user(request, user_id):
+        user_to_unfollow = User.objects.get(id=user_id)
+        request.user.following.remove(user_to_unfollow)
+        return Response(status=status.HTTP_200_OK)
 
