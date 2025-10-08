@@ -1,16 +1,14 @@
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from .models import User
 from .serializers import RegisterSerializer, loginSerializer, ProfileSerializer
 from django.urls import reverse_lazy
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from rest_framework import status
 from django.contrib.auth import authenticate
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 class RegistrationView(generics.CreateAPIView):
@@ -53,18 +51,21 @@ class ProfileView(APIView):
         return Response(serializer.data)
 
 
-class FollowView(APIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+class FollowView(generics.GenericAPIView):
+    CustomUser = User
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
 
     def follow_user(request, user_id):
         user_to_follow = User.objects.get(id=user_id)
         request.user.following.add(user_to_follow)
         return Response(status=status.HTTP_200_OK)
 
-class UnfollowView(APIView):
-    authentication_classes = [TokenAuthentication, SessionAuthentication]
-    permission_classes = [IsAuthenticated]
+class UnfollowView(generics.GenericAPIView):
+    CustomUser = User
+    queryset = CustomUser.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
 
     def unfollow_user(request, user_id):
         user_to_unfollow = User.objects.get(id=user_id)
