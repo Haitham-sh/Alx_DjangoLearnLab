@@ -54,5 +54,6 @@ class FeedViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        result = Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
+        following_users = user.profile.following.all()
+        result = Post.objects.filter(author__in=following_users).order_by('-created_at')
         return result
