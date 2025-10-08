@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
@@ -50,8 +50,9 @@ def search_posts(request):
 class FeedViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes= [IsAuthenticated]
+    permission_classes= [permissions.IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user
-        return Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
+        result = Post.objects.filter(author__in=user.following.all()).order_by('-created_at')
+        return result
