@@ -65,9 +65,9 @@ class FeedViewSet(viewsets.ModelViewSet):
 class LikeViewSet(generics.GenericAPIView):
     permission_classes= [permissions.IsAuthenticated]
 
-    def post(self, request, post_id):
-        post= Post.objects.get(id=post_id)
-        like, created = Like.objects.get_or_create(post=post, user=request.user)
+    def post(self, request, pk):
+        post= generics.get_object_or_404(Post, pk=pk)
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
         if not created:
             return Response(status=400, data={'message': 'You already liked this post'})
         Notification.objects.create(
