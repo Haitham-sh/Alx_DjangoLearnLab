@@ -1,10 +1,14 @@
 from django.shortcuts import render
-from rest_framework import viewsets, permissions
-from .models import Post, Comment
+from rest_framework import viewsets, permissions, generics
+from .models import Post, Comment, Like
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import PageNumberPagination
 from django.db.models import Q
+from rest_framework.response import Response
+from notifications.models import Notification
+from django.contrib.contenttypes.models import ContentType
+
 
 # Create your views here.
 class PostViewSet(viewsets.ModelViewSet):
@@ -57,3 +61,33 @@ class FeedViewSet(viewsets.ModelViewSet):
         following_users = user.profile.following.all()
         result = Post.objects.filter(author__in=following_users).order_by('-created_at')
         return result
+    
+class LikeViewSet(generics.GenericAPIView):
+    permission_classes= [permissions.IsAuthenticated]
+
+    def post(self, request, post_id):
+        post= Post.objects.get(id=post_id)
+        like, created = Like.objects.get_or_create(post=post, user=request.user)
+        if not created:
+            return Response(status=400, data={'message': 'You already liked this post'})
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            verb='liked your post',
+            content_type=ContentType.objects.get_for_model(post),
+            object_id=post.id
+        )
+        return Response(status=201, data={'message': 'Post liked'})
+    
+class UnlikeViewSet(generics.GenericAPIView):
+    permission_classes= [permissions.IsAuthenticated]
+
+    def post(self, request, post_id):
+        post= Post.objects.get(id=post_id)
+        like = Like.objects.filter(post=post, user=request.user).first()
+        if not like:
+            return Response(status=400, data={'message': 'You have not liked this post'})
+        like.delete()
+        return Response(status=201, data={'message': 'Post unliked'})
+
+

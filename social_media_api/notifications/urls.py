@@ -3,19 +3,16 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from .views import PostViewSet, CommentViewSet, FeedViewSet, LikeViewSet, UnlikeViewSet
+from .views import NotificationViewSet
+
 
 
 router = DefaultRouter()
-router.register(r'posts', PostViewSet)
-router.register(r'comments', CommentViewSet)
+router.register(r'notifications', NotificationViewSet)
+
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('feed/', FeedViewSet.as_view({'get': 'list'}), name='feed'),
-
-    path('posts/<int:pk>/like/', LikeViewSet.as_view(), name='like'),
-    path('posts/<int:pk>/unlike/', UnlikeViewSet.as_view(), name='unlike'),
 ]
 
 if settings.DEBUG:
